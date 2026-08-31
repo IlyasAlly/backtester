@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+data/cache/*
+!data/cache/.gitkeep
+*.png
+!docs/equity_curve.png
+.DS_Store
+.idea/
+.vscode/
