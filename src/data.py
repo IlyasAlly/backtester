@@ -59,12 +59,27 @@ def _validate(df: pd.DataFrame, ticker: str) -> pd.DataFrame:
     df = df.sort_index()
     df = df[~df.index.duplicated(keep="last")]
 
-    # TODO semaine 1 : décider quoi faire des NaN.
-    #   - Les supprimer ? Les remplir vers l'avant ?
-    #   - Un ffill sur le prix de clôture est défendable, sur le volume beaucoup moins.
-    #   Documentez votre choix dans le README, c'est une décision, pas un détail.
-    n_nan = int(df["Close"].isna().sum())
-    if n_nan:
-        print(f"[avertissement] {n_nan} clôtures manquantes pour {ticker}")
+    # Choix de conception : on supprime les séances incomplètes plutôt que de
+    # les combler. Un ffill fabriquerait des journées à rendement nul qui
+    # n'ont jamais eu lieu, ce qui réduit la volatilité mesurée et gonfle le
+    # ratio de Sharpe. Mieux vaut une série plus courte qu'une série inventée.
+    price_cols = ["Open", "High", "Low", "Close"]
+    n_before = len(df)
+
+    df = df.dropna(subset=price_cols)
+
+    n_dropped = n_before - len(df)
+
+    if n_dropped:
+        print(
+            f"[avertissement] {n_dropped} séances incomplètes retirées pour {ticker}"
+        )
+
+    # Le volume manquant vaut zéro : aucune transaction n'a été observée.
+    # Le propager reviendrait à inventer des échanges.
+    df["Volume"] = df["Volume"].fillna(0)
+
+    if df.empty:
+        raise ValueError(f"Aucune donnée valide pour {ticker}")
 
     return df
