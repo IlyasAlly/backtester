@@ -2,7 +2,7 @@
 
 Règle unique et non négociable : on n'agit jamais sur une information
 qu'on n'avait pas encore. Le signal calculé avec la clôture du jour J
-est exécuté à l'ouverture du jour J+1.
+est exécuté à la cloture du jour J+1.
 """
 
 from __future__ import annotations
@@ -28,10 +28,6 @@ def run_backtest(prices: pd.DataFrame, strategy, initial_capital: float = 10_000
     # ---- LE DÉCALAGE. Toute la validité du backtest tient dans cette ligne.
     positions = signals.shift(1).fillna(0).astype(int)
 
-    # TODO semaine 2 : rendements de l'actif puis de la stratégie.
-    #   asset_returns = prices["Close"].pct_change().fillna(0.0)
-    #   strat_returns = positions * asset_returns
-    #   equity = (1 + strat_returns).cumprod() * initial_capital
     asset_returns = prices["Close"].pct_change().fillna(0.0)
     strat_returns = (positions * asset_returns).rename("returns")
     equity = ((1 + strat_returns).cumprod() * initial_capital).rename("equity")
