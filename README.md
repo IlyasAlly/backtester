@@ -4,6 +4,8 @@ Un backtesteur minimal en Python qui évalue une stratégie de croisement de
 moyennes mobiles sur des données boursières quotidiennes, et la compare
 systématiquement à une stratégie « acheter et conserver ».
 
+![Courbe de capital](docs/equity_curve.png)
+
 
 ## Installation
 
