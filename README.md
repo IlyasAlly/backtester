@@ -92,6 +92,15 @@ corrige les fractionnements et les dividendes. Sans cet ajustement, un
 fractionnement 4-pour-1 apparaît comme une chute de 75 % et déclenche un faux
 signal de vente.
 
+**Gestion des séances incomplètes.** J'ai choisi de supprimer les séances incomplètes plutôt que de compléter les valeurs manquantes avec `ffill`. Avec `ffill`, on pourrait créer des journées avec un rendement de 0 % qui n'ont jamais réellement existé. Cela réduirait artificiellement la volatilité et pourrait donc augmenter le ratio de Sharpe. Je préfère avoir une série un peu plus courte plutôt que d'inventer des données. Pour le volume, les valeurs manquantes sont mises à zéro, car propager un ancien volume reviendrait à inventer des transactions.
+
+**Taux sans risque.** J'ai choisi un taux sans risque de **4 %** par défaut pour calculer le ratio de Sharpe. C'est une approximation, car le taux réel a beaucoup changé sur la période étudiée : il était proche de 0 % en 2020 et a ensuite dépassé 5 %. Utiliser un taux constant pendant toute la période peut donc légèrement fausser le Sharpe, mais j'ai choisi cette méthode pour garder le calcul simple.
+
+**Comptage des années.** Pour calculer le rendement annualisé, je divise le nombre de lignes de données par **252**, qui correspond au nombre moyen de séances de bourse dans une année. Une autre possibilité aurait été d'utiliser directement les dates de l'index pour calculer la durée exacte. Les deux méthodes sont valables, mais elles ne donnent pas exactement le même résultat, notamment parce que les `dropna` peuvent avoir supprimé certaines séances. J'ai choisi la méthode des 252 séances car elle est plus simple.
+
+**Volatilité nulle.** Lorsque la volatilité est égale à zéro, la fonction du ratio de Sharpe retourne **0.0** au lieu de faire une division par zéro. Cela permet notamment de gérer le cas où la stratégie n'a jamais été investie et où tous les rendements sont nuls.
+
+
 ## Tests
 
 ```bash
