@@ -4,15 +4,15 @@ Un backtesteur minimal en Python qui évalue une stratégie de croisement de
 moyennes mobiles sur des données boursières quotidiennes, et la compare
 systématiquement à une stratégie « acheter et conserver ».
 
-![Courbe de capital](docs/equity_curve.png)
+![Courbe de capital](docs/aapl.png)
 
 
 ## Installation
 
 ```bash
-git clone https://github.com/<votre-utilisateur>/backtester.git
+git clone https://github.com/IlyasAlly/backtester.git
 cd backtester
-python -m venv .venv && source .venv/bin/activate   # Windows : .venv\Scripts\activate
+python3 -m venv .venv && source .venv/bin/activate   # Windows : .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -23,18 +23,18 @@ python main.py --ticker AAPL --fast 50 --slow 200 --start 2015-01-01
 ```
 
 Résultat :
-
+ 
 ```
-2661 séances chargées pour AAPL (2015-01-02 → 2025-08-29)
+2931 séances chargées pour AAPL (2015-01-02 → 2026-08-28)
 
-                          MA50/200   Buy & Hold
-Rendement total (%)          ...          ...
-Rendement annualisé (%)      ...          ...
-Volatilité (%)               ...          ...
-Drawdown max (%)             ...          ...
-Ratio de Sharpe              ...          ...
-Transactions                 ...          ...
-Temps investi (%)            ...        100.0
+                         MA50/200  Buy & Hold
+Rendement total (%)        398.86     1222.62
+Rendement annualisé (%)     14.82       24.86
+Volatilité (%)              23.68       28.75
+Drawdown max (%)           -45.61      -38.52
+Ratio de Sharpe              0.53        0.78
+Transactions                 6.00        1.00
+Temps investi (%)           70.20      100.00
 
 Graphique écrit dans equity_curve.png
 ```
@@ -46,6 +46,16 @@ Graphique écrit dans equity_curve.png
 | `--fast` / `--slow` | `50` / `200` | Fenêtres des moyennes mobiles |
 | `--capital` | `10000` | Capital initial |
 | `--refresh` | — | Ignorer le cache et retélécharger |
+
+## Résultats
+
+Les résultats montrent que la stratégie MA50/200 fait moins bien que le buy-and-hold sur les deux titres testés. Sur AAPL, la stratégie obtient un rendement total de 398,86 %, contre 1222,62 % pour le buy-and-hold. Sur SPY, on retrouve le même résultat : 170,71 % pour la MA50/200 contre 352,04 % pour le buy-and-hold.
+
+Un résultat assez inattendu apparaît sur SPY au niveau du drawdown. Les deux approches ont exactement le même drawdown maximal, soit -33,72 %, alors que la stratégie MA50/200 n'est investie que 76 % du temps. Dans cet épisode précis, sortir du marché n'a donc apporté aucune protection contre la baisse maximale.
+
+Cela s'explique surtout par le krach de mars 2020. Une moyenne mobile de 200 jours réagit avec plusieurs semaines de retard, donc lorsque le marché baisse très rapidement, le signal de vente arrive trop tard. La stratégie vend après une partie importante de la baisse, puis rachète après le rebond, ce qui lui fait manquer une partie de la remontée. On retrouve aussi un phénomène similaire en 2022-2023, avec des périodes où la courbe de la stratégie reste assez plate pendant que le buy-and-hold remonte.
+
+Au final, ces résultats montrent que les moyennes mobiles peuvent être intéressantes lorsque le marché alterne clairement entre des périodes de hausse et de baisse. Sur la période étudiée, qui a surtout été marquée par une longue tendance haussière, le buy-and-hold était donc dans une situation plus favorable que la stratégie MA50/200.
 
 ## Structure
 
