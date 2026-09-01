@@ -19,7 +19,7 @@ pip install -r requirements.txt
 ## Utilisation
 
 ```bash
-python main.py --ticker AAPL --fast 50 --slow 200 --start 2015-01-01
+python3 main.py --ticker AAPL --fast 50 --slow 200 --start 2015-01-01
 ```
 
 Résultat :
@@ -36,7 +36,7 @@ Ratio de Sharpe              0.53        0.78
 Transactions                 6.00        1.00
 Temps investi (%)           70.20      100.00
 
-Graphique écrit dans equity_curve.png
+Graphique écrit dans aapl.png
 ```
 
 | Option | Défaut | Description |
